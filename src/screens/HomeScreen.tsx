@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { globalStyles } from '../styles/globalStyles';
 import CustomButton from '../components/CustomButton';
@@ -12,16 +13,18 @@ interface HomeScreenProps {
   navigation: HomeScreenNavigationProp;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC<HomeScreenProps & { setIsLoggedIn: (val: boolean) => void }> = ({ navigation, setIsLoggedIn }) => {
+  const handleLogout = async () => {
+    setIsLoggedIn(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={globalStyles.container}>
-        <Text style={globalStyles.title}>Bem-vindo ao Drone Monitoring App!</Text>
-
+        <Text style={globalStyles.title}>Bem-vindo ao SmartDrones</Text>
+        <Image source={require('@/assets/smartdrones-logo.png')} style={styles.logo} />
         <Text style={styles.description}>
           Gerencie drones, sensores e suas leituras em tempo real.
-          Monitore o status dos seus equipamentos e visualize dados importantes
-          para otimizar suas operações.
         </Text>
 
         <CustomButton
@@ -44,6 +47,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           onPress={() => navigation.navigate('Dashboard')}
           style={styles.navButton}
         />
+        <CustomButton
+          title="Sair"
+          onPress={handleLogout}
+          style={styles.logoutButton}
+        />
       </View>
     </ScrollView>
   );
@@ -54,6 +62,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
   },
+  logo: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginVertical: 24,
+  },
   description: {
     fontSize: 18,
     textAlign: 'center',
@@ -63,6 +78,10 @@ const styles = StyleSheet.create({
   },
   navButton: {
     marginBottom: 15,
+  },
+  logoutButton: {
+    marginTop: 30,
+    backgroundColor: '#ff4d4d',
   },
 });
 

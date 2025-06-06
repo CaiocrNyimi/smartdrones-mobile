@@ -1,12 +1,13 @@
-import 'react-native-gesture-handler';
-import React from 'react';
-import AppNavigator from './src/navigation/AppNavigator';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(false);
+
   return (
-    <SafeAreaProvider>
-      <AppNavigator />
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <RootNavigator isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    </NavigationContainer>
   );
 }

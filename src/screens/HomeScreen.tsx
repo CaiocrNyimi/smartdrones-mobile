@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { globalStyles } from '../styles/globalStyles';
 import CustomButton from '../components/CustomButton';
@@ -11,9 +10,11 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 interface HomeScreenProps {
   navigation: HomeScreenNavigationProp;
+  route: any;
+  setIsLoggedIn: (value: boolean) => void;
 }
 
-const HomeScreen: React.FC<HomeScreenProps & { setIsLoggedIn: (val: boolean) => void }> = ({ navigation, setIsLoggedIn }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, setIsLoggedIn }) => {
   const handleLogout = async () => {
     setIsLoggedIn(false);
   };

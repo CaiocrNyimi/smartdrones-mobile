@@ -15,7 +15,7 @@ type AuthNavigatorProps = {
 };
 
 const AuthNavigator: React.FC<AuthNavigatorProps> = ({ setIsLoggedIn }) => (
-  <Stack.Navigator>
+  <Stack.Navigator initialRouteName="Login">
     <Stack.Screen name="Login">
       {props => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
     </Stack.Screen>

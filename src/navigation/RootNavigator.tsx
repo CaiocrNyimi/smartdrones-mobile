@@ -9,8 +9,8 @@ type RootNavigatorProps = {
 
 const RootNavigator: React.FC<RootNavigatorProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   return isLoggedIn
-    ? <AppNavigator setIsLoggedIn={setIsLoggedIn} />
-    : <AuthNavigator setIsLoggedIn={setIsLoggedIn} />;
+  ? <AppNavigator setIsLoggedIn={setIsLoggedIn} />
+  : <AuthNavigator setIsLoggedIn={setIsLoggedIn} />;
 };
 
 export default RootNavigator;

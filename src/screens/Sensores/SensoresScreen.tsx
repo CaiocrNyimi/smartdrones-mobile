@@ -38,17 +38,15 @@ const SensoresScreen = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const success = await SensorService.delete(id);
-      if (success) {
-        await fetchSensors();
-      } else {
-        alert('Erro ao deletar. Verifique se o sensor está vinculado a leituras.');
-      }
+      console.log('Deletando sensor com ID:', id);
+      await SensorService.delete(id);
+      await fetchSensors();
     } catch (error) {
       console.error('Erro ao deletar sensor:', error);
-      alert('Erro interno ao deletar o sensor. Veja o console para detalhes.');
+      alert('Erro ao deletar o sensor. Verifique o console.');
     }
   };
+
 
   return (
     <ScrollView style={globalStyles.container} contentContainerStyle={{ paddingBottom: 20 }}>
@@ -64,7 +62,7 @@ const SensoresScreen = () => {
           sensor={{
             id: sensor.id,
             tipo: sensor.tipo,
-            drone_id: sensor.drone?.id ?? 0,
+            droneId: sensor.droneId ?? 0,
           }}
           onView={handleView}
           onEdit={handleEdit}

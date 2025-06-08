@@ -24,9 +24,9 @@ const DashboardScreen: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         const [dronesRes, sensoresRes, leiturasRes] = await Promise.all([
-          axios.get('http://192.168.0.133:8080/api/drones'),
-          axios.get('http://192.168.0.133:8080/api/sensors'),
-          axios.get('http://192.168.0.133:8080/api/leituras'),
+          axios.get('http://10.0.2.2:8080/api/drones'),
+          axios.get('http://10.0.2.2:8080/api/sensors'),
+          axios.get('http://10.0.2.2:8080/api/leituras'),
         ]);
 
         const drones = dronesRes.data.content || [];
@@ -103,14 +103,14 @@ const DashboardScreen: React.FC = () => {
         {Object.entries(data.dronesPorStatus).map(([status, count]) => (
           <View key={status} style={styles.card}>
             <Text style={styles.cardTitle}>Drones - {status}</Text>
-            <Text>{count}</Text>
+            <Text style={styles.cardValue}>{count}</Text>
           </View>
         ))}
 
         {Object.entries(data.sensoresPorTipo).map(([tipo, count]) => (
           <View key={tipo} style={styles.card}>
             <Text style={styles.cardTitle}>Sensores - {tipo}</Text>
-            <Text>{count}</Text>
+            <Text style={styles.cardValue}>{count}</Text>
           </View>
         ))}
 

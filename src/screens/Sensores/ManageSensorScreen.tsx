@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import SensorService from '../../services/sensorService';
 import { Sensor } from '../../models/Sensor';
@@ -11,13 +11,13 @@ const ManageSensorScreen = () => {
   const { sensor } = route.params as { sensor?: Sensor };
 
   const [tipo, setTipo] = useState(sensor?.tipo || '');
-  const [droneId, setDroneId] = useState(sensor?.drone?.id?.toString() || '');
+  const [droneId, setDroneId] = useState(sensor?.droneId?.toString() || '');
 
   const handleSubmit = async () => {
     const sensorData: Sensor = {
       id: sensor?.id || 0,
       tipo,
-      drone: droneId ? { id: parseInt(droneId, 10) } : undefined,
+      droneId: parseInt(droneId, 10),
     };
 
     try {
@@ -27,8 +27,9 @@ const ManageSensorScreen = () => {
         await SensorService.create(sensorData);
       }
       navigation.goBack();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao salvar sensor:', error);
+      Alert.alert('Erro', 'Não foi possível salvar o sensor. Verifique os dados e tente novamente.');
     }
   };
 

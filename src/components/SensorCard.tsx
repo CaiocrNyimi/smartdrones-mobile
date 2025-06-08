@@ -5,7 +5,7 @@ interface SensorCardProps {
   sensor: {
     id: number;
     tipo: string;
-    drone_id: number;
+    droneId: number;
   };
   onView: (id: number) => void;
   onEdit: (id: number) => void;
@@ -16,7 +16,7 @@ const SensorCard: React.FC<SensorCardProps> = ({ sensor, onView, onEdit, onDelet
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Tipo: {sensor.tipo}</Text>
-      <Text>Drone ID: {sensor.drone_id}</Text>
+      <Text>Drone ID: {sensor.droneId}</Text>
       <View style={styles.buttons}>
         <Button title="Ver" onPress={() => onView(sensor.id)} />
         <Button title="Editar" onPress={() => onEdit(sensor.id)} />

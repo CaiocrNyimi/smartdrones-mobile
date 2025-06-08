@@ -23,7 +23,7 @@ const SensorService = {
 
   delete: async (id: number) => {
     const response = await api.delete(`/sensors/${id}`);
-    return response.data;
+    return response.status === 200 || response.status === 204;
   },
 };
 

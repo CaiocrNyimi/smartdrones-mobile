@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Drone } from '../data/dummyData';
-import { globalStyles } from '../styles/globalStyles';
-import { Colors } from '../constants/Colors';
-import CustomButton from './CustomButton';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 interface DroneCardProps {
-  drone: Drone;
+  drone: {
+    id: number;
+    modelo: string;
+    status: string;
+  };
   onView: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
@@ -14,66 +14,34 @@ interface DroneCardProps {
 
 const DroneCard: React.FC<DroneCardProps> = ({ drone, onView, onEdit, onDelete }) => {
   return (
-    <TouchableOpacity style={globalStyles.card} onPress={() => onView(drone.drone_id)}>
-      <Text style={styles.title}>{drone.modelo}</Text>
-      <Text style={styles.detail}>ID: {drone.drone_id}</Text>
-      <Text style={styles.detail}>Status: <Text style={[
-        styles.statusText,
-        drone.status === 'Ativo' && styles.statusActive,
-        drone.status === 'Manutenção' && styles.statusMaintenance,
-        drone.status === 'Desativado' && styles.statusInactive,
-      ]}>{drone.status}</Text></Text>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Editar"
-          onPress={() => onEdit(drone.drone_id)}
-          style={styles.actionButton}
-          buttonType="info"
-        />
-        <CustomButton
-          title="Excluir"
-          onPress={() => onDelete(drone.drone_id)}
-          style={styles.actionButton}
-          buttonType="danger"
-        />
+    <View style={styles.card}>
+      <Text style={styles.title}>Modelo: {drone.modelo}</Text>
+      <Text>Status: {drone.status}</Text>
+      <View style={styles.buttons}>
+        <Button title="Ver" onPress={() => onView(drone.id)} />
+        <Button title="Editar" onPress={() => onEdit(drone.id)} />
+        <Button title="Excluir" onPress={() => onDelete(drone.id)} />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    marginBottom: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: Colors.text,
-  },
-  detail: {
     fontSize: 16,
-    color: Colors.textLight,
-    marginBottom: 3,
+    marginBottom: 6,
   },
-  statusText: {
-    fontWeight: 'bold',
-  },
-  statusActive: {
-    color: Colors.primaryDark,
-  },
-  statusMaintenance: {
-    color: Colors.accent,
-  },
-  statusInactive: {
-    color: Colors.danger,
-  },
-  buttonContainer: {
+  buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 10,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 8,
   },
 });
 

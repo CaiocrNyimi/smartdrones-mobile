@@ -1,55 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { fetchSensores } from '../../services/sensorService';
+import React, { useState, useCallback } from 'react';
+import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import SensorService from '../../services/sensorService';
+import SensorCard from '../../components/SensorCard';
+import { globalStyles } from '../../styles/globalStyles';
+import { Sensor } from '../../models/Sensor';
+import { NavigationProps } from '../../types/navigation';
 
-export default function SensoresScreen() {
-  const [sensores, setSensores] = useState([]);
-  const [loading, setLoading] = useState(true);
+const SensoresScreen = () => {
+  const [sensors, setSensors] = useState<Sensor[]>([]);
+  const navigation = useNavigation<NavigationProps>();
 
-  useEffect(() => {
-    fetchSensores()
-      .then(setSensores)
-      .catch(error => console.error('Erro ao buscar sensores:', error))
-      .finally(() => setLoading(false));
-  }, []);
+  const fetchSensors = async () => {
+    try {
+      const data = await SensorService.getAll();
+      setSensors(data);
+    } catch (error) {
+      console.error('Erro ao buscar sensores:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchSensors();
+    }, [])
+  );
+
+  const handleView = (id: number) => {
+    const sensor = sensors.find((s) => s.id === id);
+    if (sensor) navigation.navigate('SensorDetail', { sensor });
+  };
+
+  const handleEdit = (id: number) => {
+    const sensor = sensors.find((s) => s.id === id);
+    if (sensor) navigation.navigate('ManageSensor', { sensor });
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const success = await SensorService.delete(id);
+      if (success) {
+        await fetchSensors();
+      } else {
+        alert('Erro ao deletar. Verifique se o sensor está vinculado a leituras.');
+      }
+    } catch (error) {
+      console.error('Erro ao deletar sensor:', error);
+      alert('Erro interno ao deletar o sensor. Veja o console para detalhes.');
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <FlatList
-          data={sensores}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.label}>Tipo:</Text>
-              <Text>{item.tipo}</Text>
-              <Text style={styles.label}>Unidade:</Text>
-              <Text>{item.unidade}</Text>
-              <Text style={styles.label}>Drone:</Text>
-              <Text>{item.drone?.modelo}</Text>
-            </View>
-          )}
+    <ScrollView style={globalStyles.container} contentContainerStyle={{ paddingBottom: 20 }}>
+      <TouchableOpacity
+        style={globalStyles.button}
+        onPress={() => navigation.navigate('ManageSensor', {})}
+      >
+        <Text style={globalStyles.buttonText}>Novo Sensor</Text>
+      </TouchableOpacity>
+      {sensors?.map((sensor) => (
+        <SensorCard
+          key={sensor.id}
+          sensor={{
+            id: sensor.id,
+            tipo: sensor.tipo,
+            drone_id: sensor.drone?.id ?? 0,
+          }}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
-      )}
-    </View>
+      ))}
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  item: {
-    backgroundColor: '#f0f0f0',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 8,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-});
+export default SensoresScreen;

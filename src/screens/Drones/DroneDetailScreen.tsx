@@ -1,33 +1,29 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigation/AppNavigator';
+import { globalStyles } from '../../styles/globalStyles';
 
-export default function DroneDetailScreen({ route }: any) {
+type DroneDetailRouteProp = RouteProp<RootStackParamList, 'DroneDetail'>;
+
+const DroneDetailScreen = () => {
+  const route = useRoute<DroneDetailRouteProp>();
   const { drone } = route.params;
 
+  if (!drone) {
+    return (
+      <View style={globalStyles.container}>
+        <Text>Drone não encontrado.</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Detalhes do Drone</Text>
-      <Text style={styles.label}>Modelo:</Text>
-      <Text>{drone.modelo}</Text>
-      <Text style={styles.label}>Status:</Text>
-      <Text>{drone.status}</Text>
+    <View style={globalStyles.container}>
+      <Text style={globalStyles.title}>Modelo: {drone.modelo}</Text>
+      <Text>Status: {drone.status}</Text>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-});
+export default DroneDetailScreen;

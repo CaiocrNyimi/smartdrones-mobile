@@ -1,65 +1,49 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { LeituraSensor } from '../data/dummyData';
-import { globalStyles } from '../styles/globalStyles';
-import { Colors } from '../constants/Colors';
-import CustomButton from './CustomButton';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 interface LeituraCardProps {
-  leitura: LeituraSensor;
+  leitura: {
+    id: number;
+    valor: number;
+    timestamp: string;
+    sensor_id: number;
+  };
   onView: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
 const LeituraCard: React.FC<LeituraCardProps> = ({ leitura, onView, onEdit, onDelete }) => {
-  const formattedTimestamp = leitura.timestamp.toLocaleString();
-
   return (
-    <TouchableOpacity style={globalStyles.card} onPress={() => onView(leitura.leitura_id)}>
-      <Text style={styles.title}>Leitura ID: {leitura.leitura_id}</Text>
-      <Text style={styles.detail}>Sensor ID: {leitura.sensor_id}</Text>
-      <Text style={styles.detail}>Valor: {leitura.valor}</Text>
-      <Text style={styles.detail}>Data/Hora: {formattedTimestamp}</Text>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Editar"
-          onPress={() => onEdit(leitura.leitura_id)}
-          style={styles.actionButton}
-          buttonType="info"
-        />
-        <CustomButton
-          title="Excluir"
-          onPress={() => onDelete(leitura.leitura_id)}
-          style={styles.actionButton}
-          buttonType="danger"
-        />
+    <View style={styles.card}>
+      <Text style={styles.title}>Valor: {leitura.valor}</Text>
+      <Text>Data: {new Date(leitura.timestamp).toLocaleString()}</Text>
+      <Text>Sensor ID: {leitura.sensor_id}</Text>
+      <View style={styles.buttons}>
+        <Button title="Ver" onPress={() => onView(leitura.id)} />
+        <Button title="Editar" onPress={() => onEdit(leitura.id)} />
+        <Button title="Excluir" onPress={() => onDelete(leitura.id)} />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    marginBottom: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: Colors.text,
-  },
-  detail: {
     fontSize: 16,
-    color: Colors.textLight,
-    marginBottom: 3,
+    marginBottom: 6,
   },
-  buttonContainer: {
+  buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 10,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 8,
   },
 });
 

@@ -14,7 +14,7 @@ import LeiturasScreen from '../screens/Leituras/LeiturasScreen';
 import LeituraDetailScreen from '../screens/Leituras/LeituraDetailScreen';
 import ManageLeituraScreen from '../screens/Leituras/ManageLeituraScreen';
 
-import DashboardScreen from '../screens/DashboardScreen'; // ADICIONE ISSO
+import DashboardScreen from '../screens/DashboardScreen';
 
 export type RootStackParamList = {
   Home: undefined;

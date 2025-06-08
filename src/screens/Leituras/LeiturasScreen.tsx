@@ -1,55 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { fetchLeituras } from '../../services/leituraService';
+import React, { useState, useCallback } from 'react';
+import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import LeituraService from '../../services/leituraService';
+import LeituraCard from '../../components/LeituraCard';
+import { globalStyles } from '../../styles/globalStyles';
+import { LeituraSensor } from '../../models/LeituraSensor';
+import { NavigationProps } from '../../types/navigation';
 
-export default function LeiturasScreen() {
-  const [leituras, setLeituras] = useState([]);
-  const [loading, setLoading] = useState(true);
+const LeiturasScreen = () => {
+  const [leituras, setLeituras] = useState<LeituraSensor[]>([]);
+  const navigation = useNavigation<NavigationProps>();
 
-  useEffect(() => {
-    fetchLeituras()
-      .then(setLeituras)
-      .catch(error => console.error('Erro ao buscar leituras:', error))
-      .finally(() => setLoading(false));
-  }, []);
+  const fetchLeituras = async () => {
+    try {
+      const data = await LeituraService.getAll();
+      setLeituras(data);
+    } catch (error) {
+      console.error('Erro ao buscar leituras:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchLeituras();
+    }, [])
+  );
+
+  const handleView = (id: number) => {
+    const leitura = leituras.find((l) => l.id === id);
+    if (leitura) navigation.navigate('LeituraDetail', { leitura });
+  };
+
+  const handleEdit = (id: number) => {
+    const leitura = leituras.find((l) => l.id === id);
+    if (leitura) navigation.navigate('ManageLeitura', { leitura });
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const success = await LeituraService.delete(id);
+      if (success) {
+        await fetchLeituras();
+      } else {
+        alert('Erro ao deletar a leitura.');
+      }
+    } catch (error) {
+      console.error('Erro ao deletar leitura:', error);
+      alert('Erro interno ao deletar a leitura. Veja o console para detalhes.');
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <FlatList
-          data={leituras}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.label}>Valor:</Text>
-              <Text>{item.valor}</Text>
-              <Text style={styles.label}>Unidade:</Text>
-              <Text>{item.unidade}</Text>
-              <Text style={styles.label}>Sensor ID:</Text>
-              <Text>{item.sensor?.id}</Text>
-            </View>
-          )}
+    <ScrollView style={globalStyles.container} contentContainerStyle={{ paddingBottom: 20 }}>
+      <TouchableOpacity
+        style={globalStyles.button}
+        onPress={() => navigation.navigate('ManageLeitura', {})}
+      >
+        <Text style={globalStyles.buttonText}>Nova Leitura</Text>
+      </TouchableOpacity>
+      {leituras?.map((leitura) => (
+        <LeituraCard
+          key={leitura.id}
+          leitura={{
+            id: leitura.id,
+            valor: leitura.valor,
+            timestamp: leitura.timestamp,
+            sensor_id: leitura.sensor?.id ?? 0,
+          }}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
-      )}
-    </View>
+      ))}
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  item: {
-    backgroundColor: '#f0f0f0',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 8,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-});
+export default LeiturasScreen;

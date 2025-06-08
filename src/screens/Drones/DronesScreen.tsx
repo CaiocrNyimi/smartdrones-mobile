@@ -1,74 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { getDrones } from '../../services/droneService';
+import React, { useState, useCallback } from 'react';
+import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import DroneService from '../../services/droneService';
+import DroneCard from '../../components/DroneCard';
 import { globalStyles } from '../../styles/globalStyles';
+import { Drone } from '../../models/Drone';
+import { NavigationProps } from '../../types/navigation';
 
-export default function DronesScreen() {
-  const [drones, setDrones] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+const DronesScreen = () => {
+  const [drones, setDrones] = useState<Drone[]>([]);
+  const navigation = useNavigation<NavigationProps>();
 
-  useEffect(() => {
-    const fetchDrones = async () => {
-      try {
-        const data = await getDrones();
-        setDrones(data);
-      } catch (e) {
-        setError(true);
-      } finally {
-        setLoading(false);
+  const fetchDrones = async () => {
+    try {
+      const data = await DroneService.getAll();
+      setDrones(data);
+    } catch (error) {
+      console.error('Erro ao buscar drones:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchDrones = async () => {
+        try {
+          const data = await DroneService.getAll();
+          setDrones(data);
+        } catch (error) {
+          console.error('Erro ao buscar drones:', error);
+        }
+      };
+
+      fetchDrones();
+    }, [])
+  );
+
+  const handleView = (id: number) => {
+    const drone = drones.find((d) => d.id === id);
+    if (drone) navigation.navigate('DroneDetail', { drone });
+  };
+
+  const handleEdit = (id: number) => {
+    const drone = drones.find((d) => d.id === id);
+    if (drone) navigation.navigate('ManageDrone', { drone });
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const success = await DroneService.delete(id);
+      if (success) {
+        await fetchDrones();
+      } else {
+        alert('Erro ao deletar. Verifique se o drone está vinculado a sensores ou leituras.');
       }
-    };
+    } catch (error) {
+      console.error('Erro ao deletar drone:', error);
+      alert('Erro interno ao deletar o drone. Veja o console para detalhes.');
+    }
+  };
 
-    fetchDrones();
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={globalStyles.container}>
-        <ActivityIndicator size="large" color="#000" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>Erro ao carregar drones.</Text>
-      </View>
-    );
-  }
-
-  if (drones.length === 0) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>Nenhum drone encontrado.</Text>
-      </View>
-    );
-  }
 
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Drones</Text>
-      <FlatList
-        data={drones}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={globalStyles.card}>
-            <Text style={styles.name}>{item.nome}</Text>
-            <Text>ID: {item.id}</Text>
-            <Text>Status: {item.status}</Text>
-          </View>
-        )}
-      />
-    </View>
+    <ScrollView style={globalStyles.container} contentContainerStyle={{ paddingBottom: 20 }}>
+      <TouchableOpacity
+        style={globalStyles.button}
+        onPress={() => navigation.navigate('ManageDrone', {})}
+      >
+        <Text style={globalStyles.buttonText}>Novo Drone</Text>
+      </TouchableOpacity>
+      {drones?.map((drone) => (
+        <DroneCard
+          key={drone.id}
+          drone={{
+            id: drone.id,
+            modelo: drone.modelo,
+            status: drone.status ?? 'Desativado',
+          }}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      ))}
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-});
+export default DronesScreen;

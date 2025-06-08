@@ -1,30 +1,31 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigation/AppNavigator';
+import { globalStyles } from '../../styles/globalStyles';
 
-export default function SensorDetailScreen({ route }: any) {
+import { Sensor } from '../../models/Sensor';
+
+type SensorDetailRouteProp = RouteProp<RootStackParamList, 'SensorDetail'>;
+
+const SensorDetailScreen = () => {
+  const route = useRoute<SensorDetailRouteProp>();
   const { sensor } = route.params;
 
+  if (!sensor) {
+    return (
+      <View style={globalStyles.container}>
+        <Text>Sensor não encontrado.</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>ID:</Text>
-      <Text>{sensor.id}</Text>
-      <Text style={styles.label}>Tipo:</Text>
-      <Text>{sensor.tipo}</Text>
-      <Text style={styles.label}>Unidade:</Text>
-      <Text>{sensor.unidade}</Text>
-      <Text style={styles.label}>Drone:</Text>
-      <Text>{sensor.drone?.modelo}</Text>
+    <View style={globalStyles.container}>
+      <Text style={globalStyles.title}>Tipo: {sensor.tipo}</Text>
+      <Text>Drone ID: {sensor.drone?.id ?? 'N/A'}</Text>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-});
+export default SensorDetailScreen;

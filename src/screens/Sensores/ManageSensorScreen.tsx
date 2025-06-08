@@ -1,41 +1,59 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import SensorService from '../../services/sensorService';
+import { Sensor } from '../../models/Sensor';
+import { globalStyles } from '../../styles/globalStyles';
 
-export default function ManageSensorScreen({ route }: any) {
-  const sensor = route?.params?.sensor;
+const ManageSensorScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { sensor } = route.params as { sensor?: Sensor };
+
   const [tipo, setTipo] = useState(sensor?.tipo || '');
-  const [unidade, setUnidade] = useState(sensor?.unidade || '');
+  const [droneId, setDroneId] = useState(sensor?.drone?.id?.toString() || '');
+
+  const handleSubmit = async () => {
+    const sensorData: Sensor = {
+      id: sensor?.id || 0,
+      tipo,
+      drone: droneId ? { id: parseInt(droneId, 10) } : undefined,
+    };
+
+    try {
+      if (sensor?.id) {
+        await SensorService.update(sensor.id, sensorData);
+      } else {
+        await SensorService.create(sensorData);
+      }
+      navigation.goBack();
+    } catch (error) {
+      console.error('Erro ao salvar sensor:', error);
+    }
+  };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
+      <Text style={globalStyles.label}>Tipo</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Tipo"
+        style={globalStyles.input}
         value={tipo}
         onChangeText={setTipo}
+        placeholder="Digite o tipo"
       />
+
+      <Text style={globalStyles.label}>Drone ID</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Unidade"
-        value={unidade}
-        onChangeText={setUnidade}
+        style={globalStyles.input}
+        value={droneId}
+        onChangeText={setDroneId}
+        placeholder="Digite o ID do drone"
+        keyboardType="numeric"
       />
-      <Button title="Salvar" onPress={() => {}} />
+
+      <Button title="Salvar" onPress={handleSubmit} />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  input: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    padding: 8,
-    marginBottom: 12,
-    borderRadius: 4,
-  },
-});
+export default ManageSensorScreen;

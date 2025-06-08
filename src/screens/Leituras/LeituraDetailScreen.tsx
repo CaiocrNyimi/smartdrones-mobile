@@ -1,30 +1,28 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import LeituraService from '../../services/leituraService';
+import { globalStyles } from '../../styles/globalStyles';
 
-export default function LeituraDetailScreen({ route }: any) {
-  const { leitura } = route.params;
+const LeituraDetailsScreen = () => {
+  const route = useRoute<RouteProp<{ params: { id: number } }, 'params'>>();
+  const { id } = route.params;
+  const [leitura, setLeitura] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    LeituraService.getById(id).then(setLeitura).finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <ActivityIndicator style={{ flex: 1 }} />;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>ID:</Text>
-      <Text>{leitura.id}</Text>
-      <Text style={styles.label}>Valor:</Text>
-      <Text>{leitura.valor}</Text>
-      <Text style={styles.label}>Unidade:</Text>
-      <Text>{leitura.unidade}</Text>
-      <Text style={styles.label}>Sensor ID:</Text>
-      <Text>{leitura.sensor?.id}</Text>
+    <View style={globalStyles.container}>
+      <Text>Valor: {leitura.valor}</Text>
+      <Text>Timestamp: {new Date(leitura.timestamp).toLocaleString()}</Text>
+      <Text>Sensor ID: {leitura.sensor?.id}</Text>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-});
+export default LeituraDetailsScreen;

@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Sensor } from '../data/dummyData';
-import { globalStyles } from '../styles/globalStyles';
-import { Colors } from '../constants/Colors';
-import CustomButton from './CustomButton';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 interface SensorCardProps {
-  sensor: Sensor;
+  sensor: {
+    id: number;
+    tipo: string;
+    drone_id: number;
+  };
   onView: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
@@ -14,49 +14,34 @@ interface SensorCardProps {
 
 const SensorCard: React.FC<SensorCardProps> = ({ sensor, onView, onEdit, onDelete }) => {
   return (
-    <TouchableOpacity style={globalStyles.card} onPress={() => onView(sensor.sensor_id)}>
-      <Text style={styles.title}>{sensor.tipo}</Text>
-      <Text style={styles.detail}>ID: {sensor.sensor_id}</Text>
-      <Text style={styles.detail}>Drone ID Associado: {sensor.drone_id}</Text>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Editar"
-          onPress={() => onEdit(sensor.sensor_id)}
-          style={styles.actionButton}
-          buttonType="info"
-        />
-        <CustomButton
-          title="Excluir"
-          onPress={() => onDelete(sensor.sensor_id)}
-          style={styles.actionButton}
-          buttonType="danger"
-        />
+    <View style={styles.card}>
+      <Text style={styles.title}>Tipo: {sensor.tipo}</Text>
+      <Text>Drone ID: {sensor.drone_id}</Text>
+      <View style={styles.buttons}>
+        <Button title="Ver" onPress={() => onView(sensor.id)} />
+        <Button title="Editar" onPress={() => onEdit(sensor.id)} />
+        <Button title="Excluir" onPress={() => onDelete(sensor.id)} />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    marginBottom: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: Colors.text,
-  },
-  detail: {
     fontSize: 16,
-    color: Colors.textLight,
-    marginBottom: 3,
+    marginBottom: 6,
   },
-  buttonContainer: {
+  buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 10,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 8,
   },
 });
 

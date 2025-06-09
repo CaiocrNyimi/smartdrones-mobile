@@ -117,10 +117,10 @@ const DashboardScreen: React.FC = () => {
         {data.ultimaLeitura && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Última Leitura</Text>
-            <Text>Valor: {data.ultimaLeitura.valor}</Text>
-            <Text>Tipo: {data.ultimaLeitura.tipo}</Text>
-            <Text>Drone: {data.ultimaLeitura.modeloDrone}</Text>
-            <Text>
+            <Text style={styles.cardInfo}>Valor: {data.ultimaLeitura.valor}</Text>
+            <Text style={styles.cardInfo}>Tipo: {data.ultimaLeitura.tipo}</Text>
+            <Text style={styles.cardInfo}>Drone: {data.ultimaLeitura.modeloDrone}</Text>
+            <Text style={styles.cardInfo}>
               Data: {new Date(data.ultimaLeitura.timestamp).toLocaleString()}
             </Text>
           </View>
@@ -145,32 +145,38 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 20,
+    color: Colors.primaryDark,
+    marginBottom: 24,
     textAlign: 'center',
   },
   card: {
     backgroundColor: Colors.white,
-    padding: 20,
-    marginBottom: 15,
-    borderRadius: 12,
+    padding: 18,
+    marginBottom: 16,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
+    shadowRadius: 6,
     elevation: 2,
   },
   cardTitle: {
     fontSize: 18,
+    fontWeight: '600',
     color: Colors.text,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   cardValue: {
     fontSize: 32,
     fontWeight: 'bold',
     color: Colors.primary,
+  },
+  cardInfo: {
+    fontSize: 16,
+    color: Colors.text,
+    marginTop: 4,
   },
 });
 

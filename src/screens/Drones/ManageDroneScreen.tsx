@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DroneService from '../../services/droneService';
 import { Drone } from '../../models/Drone';
-import { globalStyles } from '../../styles/globalStyles';
+import { Colors } from '../../constants/Colors';
 
 const ManageDroneScreen = () => {
   const navigation = useNavigation();
@@ -34,29 +34,81 @@ const ManageDroneScreen = () => {
   };
 
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.label}>Modelo</Text>
+    <View style={styles.container}>
+      <Text style={styles.label}>Modelo</Text>
       <TextInput
-        style={globalStyles.input}
+        style={styles.input}
         value={modelo}
         onChangeText={setModelo}
         placeholder="Digite o modelo"
+        placeholderTextColor={Colors.textLight}
       />
 
-      <Text style={globalStyles.label}>Status</Text>
-      <Picker
-        selectedValue={status}
-        onValueChange={(itemValue: any) => setStatus(itemValue)}
-        style={globalStyles.input}
-      >
-        <Picker.Item label="Ativo" value="Ativo" />
-        <Picker.Item label="Manutenção" value="Manutenção" />
-        <Picker.Item label="Desativado" value="Desativado" />
-      </Picker>
+      <Text style={styles.label}>Status</Text>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={status}
+          onValueChange={(itemValue: any) => setStatus(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Ativo" value="Ativo" />
+          <Picker.Item label="Manutenção" value="Manutenção" />
+          <Picker.Item label="Desativado" value="Desativado" />
+        </Picker>
+      </View>
 
-      <Button title="Salvar" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Salvar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: Colors.background,
+    flex: 1,
+  },
+  label: {
+    fontSize: 16,
+    color: Colors.primaryDark,
+    marginBottom: 6,
+    marginTop: 14,
+  },
+  input: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    color: Colors.textDark,
+  },
+  pickerWrapper: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: Colors.textDark,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default ManageDroneScreen;

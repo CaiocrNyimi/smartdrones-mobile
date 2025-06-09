@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import DroneService from '../../services/droneService';
 import DroneCard from '../../components/DroneCard';
@@ -22,15 +22,6 @@ const DronesScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const fetchDrones = async () => {
-        try {
-          const data = await DroneService.getAll();
-          setDrones(data);
-        } catch (error) {
-          console.error('Erro ao buscar drones:', error);
-        }
-      };
-
       fetchDrones();
     }, [])
   );
@@ -59,15 +50,12 @@ const DronesScreen = () => {
     }
   };
 
-
   return (
     <ScrollView style={globalStyles.container} contentContainerStyle={{ paddingBottom: 20 }}>
-      <TouchableOpacity
-        style={globalStyles.button}
-        onPress={() => navigation.navigate('ManageDrone', {})}
-      >
+      <TouchableOpacity style={globalStyles.addButton} onPress={() => navigation.navigate('ManageDrone', {})}>
         <Text style={globalStyles.buttonText}>Novo Drone</Text>
       </TouchableOpacity>
+
       {drones?.map((drone) => (
         <DroneCard
           key={drone.id}

@@ -38,7 +38,17 @@ type AppNavigatorProps = {
 
 export default function AppNavigator({ setIsLoggedIn }: AppNavigatorProps) {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: { backgroundColor: '#2E7D32' },
+        headerTintColor: '#fff',
+        headerTitleStyle: { 
+          fontWeight: 'bold',
+          fontSize: 20
+        },
+      }}
+    >
       <Stack.Screen name="Home">
         {props => <HomeScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
       </Stack.Screen>

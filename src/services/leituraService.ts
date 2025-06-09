@@ -23,7 +23,7 @@ const LeituraService = {
 
   delete: async (id: number) => {
     const response = await api.delete(`/leituras/${id}`);
-    return response.data;
+    return response.status === 200 || response.status === 204;
   },
 };
 

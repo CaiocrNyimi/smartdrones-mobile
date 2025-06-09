@@ -1,7 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -18,9 +17,6 @@ const AuthNavigator: React.FC<AuthNavigatorProps> = ({ setIsLoggedIn }) => (
   <Stack.Navigator initialRouteName="Login">
     <Stack.Screen name="Login">
       {props => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
-    </Stack.Screen>
-    <Stack.Screen name="Register">
-      {props => <RegisterScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
     </Stack.Screen>
   </Stack.Navigator>
 );

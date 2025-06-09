@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import SensorService from '../../services/sensorService';
 import { Sensor } from '../../models/Sensor';
-import { globalStyles } from '../../styles/globalStyles';
+import { Colors } from '../../constants/Colors';
 
 const ManageSensorScreen = () => {
   const navigation = useNavigation();
@@ -34,27 +34,66 @@ const ManageSensorScreen = () => {
   };
 
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.label}>Tipo</Text>
+    <View style={styles.container}>
+      <Text style={styles.label}>Tipo</Text>
       <TextInput
-        style={globalStyles.input}
+        style={styles.input}
         value={tipo}
         onChangeText={setTipo}
         placeholder="Digite o tipo"
+        placeholderTextColor={Colors.textLight}
       />
 
-      <Text style={globalStyles.label}>Drone ID</Text>
+      <Text style={styles.label}>Drone ID</Text>
       <TextInput
-        style={globalStyles.input}
+        style={styles.input}
         value={droneId}
         onChangeText={setDroneId}
         placeholder="Digite o ID do drone"
         keyboardType="numeric"
+        placeholderTextColor={Colors.textLight}
       />
 
-      <Button title="Salvar" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Salvar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: Colors.background,
+    flex: 1,
+  },
+  label: {
+    fontSize: 16,
+    color: Colors.primaryDark,
+    marginBottom: 6,
+    marginTop: 14,
+  },
+  input: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 10,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    color: Colors.textDark,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default ManageSensorScreen;

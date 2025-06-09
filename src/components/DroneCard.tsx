@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 interface DroneCardProps {
   drone: {
@@ -16,11 +17,18 @@ const DroneCard: React.FC<DroneCardProps> = ({ drone, onView, onEdit, onDelete }
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Modelo: {drone.modelo}</Text>
-      <Text>Status: {drone.status}</Text>
-      <View style={styles.buttons}>
-        <Button title="Ver" onPress={() => onView(drone.id)} />
-        <Button title="Editar" onPress={() => onEdit(drone.id)} />
-        <Button title="Excluir" onPress={() => onDelete(drone.id)} />
+      <Text style={styles.subtitle}>Status: {drone.status}</Text>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => onView(drone.id)}>
+          <Text style={styles.buttonText}>Ver</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => onEdit(drone.id)}>
+          <Text style={styles.buttonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.dangerButton} onPress={() => onDelete(drone.id)}>
+          <Text style={styles.buttonText}>Excluir</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -28,20 +36,53 @@ const DroneCard: React.FC<DroneCardProps> = ({ drone, onView, onEdit, onDelete }
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: Colors.white,
     padding: 16,
-    marginBottom: 12,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
   },
   title: {
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 6,
+    color: Colors.primaryDark,
+    marginBottom: 4,
   },
-  buttons: {
+  subtitle: {
+    fontSize: 14,
+    color: Colors.textLight,
+    marginBottom: 12,
+  },
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    gap: 10,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  dangerButton: {
+    backgroundColor: Colors.danger,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

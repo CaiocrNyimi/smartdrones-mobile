@@ -42,7 +42,7 @@ const LeiturasScreen = () => {
       if (success) {
         await fetchLeituras();
       } else {
-        alert('Erro ao deletar a leitura.');
+        alert('Erro ao deletar leitura.');
       }
     } catch (error) {
       console.error('Erro ao deletar leitura:', error);
@@ -61,12 +61,7 @@ const LeiturasScreen = () => {
       {leituras?.map((leitura) => (
         <LeituraCard
           key={leitura.id}
-          leitura={{
-            id: leitura.id,
-            valor: leitura.valor,
-            timestamp: leitura.timestamp,
-            sensor_id: leitura.sensor?.id ?? 0,
-          }}
+          leitura={leitura}
           onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDelete}
